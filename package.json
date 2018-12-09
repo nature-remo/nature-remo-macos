@@ -51,9 +51,10 @@
     "electron-devtools-installer": "^2.1.0",
     "electron-squirrel-startup": "^1.0.0",
     "isomorphic-unfetch": "^3.0.0",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "react-hot-loader": "^3.0.0-beta.6",
+    "nature-remo": "^0.3.0",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-hot-loader": "^4.3.12",
     "styled-components": "^4.1.2"
   },
   "devDependencies": {
@@ -63,10 +64,10 @@
     "babel-preset-react": "^6.24.1",
     "electron-forge": "^5.2.3",
     "electron-prebuilt-compile": "3.0.10",
-    "eslint": "^3",
-    "eslint-config-airbnb": "^15",
+    "eslint": "^5.10.0",
+    "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2",
-    "eslint-plugin-jsx-a11y": "^5",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7"
   }
 }
