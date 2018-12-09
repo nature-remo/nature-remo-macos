@@ -1,18 +1,17 @@
 import React from 'react'
-import fetch from 'isomorphic-unfetch'
 import styled from 'styled-components'
+import * as NatureRemo from 'nature-remo'
 
 import BarIndicator from './components/BarIndicator'
 import TemperatureController from './components/TemperatureController'
 import Display from './components/Display'
 import Header from './components/Header'
 
-const token = process.env.NATURE_REMO_TOKEN
-
 export default class App extends React.Component {
   constructor(props) {
     super(props)
 
+    this.natureRemo = new NatureRemo.Cloud(process.env.NATURE_REMO_TOKEN)
     this.floatingVariables = [
       'temperature',
       'targetTemperature',
@@ -20,8 +19,8 @@ export default class App extends React.Component {
       'mode',
       'airVolume',
       'airconSwitch',
+      'airconID',
     ]
-
     this.state = Object.assign(
       {
         isModifyingTemperature: false,
@@ -34,34 +33,8 @@ export default class App extends React.Component {
     )
   }
 
-  async nremoFetch(path, method = 'GET', body = undefined) {
-    this.setState({ isSyncingWithServer: true })
-    try {
-      const res = await fetch(`https://api.nature.global/1/${path}`, {
-        method: method,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-        },
-        body: body,
-      })
-      const json = await res.json()
-      this.setState({ isSyncingWithServer: false })
-      return json
-    } catch (err) {
-      console.log(err)
-      this.setState({ isSyncingWithServer: false })
-      return null
-    }
-  }
-
-  async getAircon() {
-    const appliances = await this.nremoFetch('appliances')
-    return appliances.find(app => app.type === 'AC')
-  }
-
   async fetchSensorValueAndUpdateState() {
-    const devices = await this.nremoFetch('devices')
+    const devices = await this.natureRemo.getDevices()
     const device = devices[0]
     const temperature = device.newest_events.te.val
     this.setState({ temperature })
@@ -69,12 +42,15 @@ export default class App extends React.Component {
   }
 
   async fetchAirconSettingsAndUpdateState() {
+    const appliances = await this.natureRemo.getAppliances()
+    const aircon = appliances.find(app => app.type === 'AC')
     const {
+      id,
       aircon: {
         range: { modes },
       },
       settings: { button, mode, temp, vol },
-    } = await this.getAircon()
+    } = aircon
     const targetTemperatureMax = Math.max(
       ...modes[mode].temp.map(s => Number(s))
     )
@@ -85,20 +61,26 @@ export default class App extends React.Component {
       mode,
       airVolume: vol,
       airconSwitch: button === 'power-off' ? false : true,
+      airconID: id,
     }
     this.setState(newState)
     return newState
   }
 
   async applyAirconSettings() {
-    const { mode, targetTemperature, airVolume, airconSwitch } = this.state
-    const { id } = await this.getAircon()
+    const {
+      mode,
+      targetTemperature,
+      airVolume,
+      airconSwitch,
+      airconID,
+    } = this.state
 
     const params = airconSwitch
       ? `operation_mode=${mode}&temperature=${targetTemperature}&air_volume=${airVolume}`
       : 'button=power-off'
 
-    await this.nremoFetch(`appliances/${id}/aircon_settings`, 'POST', params)
+    await this.natureRemo.updateAirconSettings(airconID, params)
   }
 
   shouldUpdateValue() {
@@ -128,6 +110,7 @@ export default class App extends React.Component {
 
   async componentDidMount() {
     if (this.shouldUpdateValue()) {
+      this.setState({ isSyncingWithServer: true })
       const updatedValues = Object.assign(
         {},
         ...(await Promise.all([
@@ -139,6 +122,7 @@ export default class App extends React.Component {
       this.saveCache(
         Object.assign({ timeLastFetched: new Date().getTime() }, updatedValues)
       )
+      this.setState({ isSyncingWithServer: false })
     } else {
       this.loadCache(this.floatingVariables)
     }
