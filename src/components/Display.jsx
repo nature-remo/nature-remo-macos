@@ -1,36 +1,39 @@
 import React from 'react'
+import styled from 'styled-components'
 
-const Display = ({
-  temperature,
-  targetTemperature,
-  isModifying,
-  isSyncing,
-}) => (
-  <div
-    style={{
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-      fontFamily: "'BlinkMacSystemFont', sans-serif",
-      color: 'black',
-      transition: `all 1s`,
-      filter: isSyncing ? 'blur(15px)' : 'none',
-    }}>
-    <div
-      style={{
-        fontSize: '100px',
-        marginBottom: '30px',
-        transition: `all .5s`,
-      }}>
-      {targetTemperature}
-    </div>
-    <div style={{ fontSize: '15px' }}>気温</div>
-    <div style={{ fontSize: '40px' }}>{temperature}</div>
-  </div>
+const Display = props => (
+  <Container>
+    <LargeGauge>{props.targetTemperature}</LargeGauge>
+    <Label>気温</Label>
+    <SmallGauge>{props.temperature}</SmallGauge>
+  </Container>
 )
+
+const Container = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: 'BlinkMacSystemFont', sans-serif;
+  color: black;
+  transition: all 1s,
+  filter: ${props => (props.isSyncing ? 'blur(15px)' : 'none')};
+`
+
+const Label = styled.div`
+  font-size: 15px;
+`
+
+const LargeGauge = styled.div`
+  font-size: 100px;
+  margin-bottom: 30px;
+`
+
+const SmallGauge = styled.div`
+  font-size: 40px;
+`
 
 export default Display

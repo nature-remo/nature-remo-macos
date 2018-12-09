@@ -1,26 +1,37 @@
 import React from 'react'
 import fetch from 'isomorphic-unfetch'
+import styled from 'styled-components'
 
 import BarIndicator from './components/BarIndicator'
 import TemperatureController from './components/TemperatureController'
 import Display from './components/Display'
+import Header from './components/Header'
 
 const token = process.env.NATURE_REMO_TOKEN
 
 export default class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      airconSwitch: null,
-      mode: null,
-      airVolume: null,
-      temperature: null,
-      targetTemperature: null,
-      targetTemperatureMax: null,
-      isModifyingTemperature: false,
-      isRateLimitReached: false,
-      isSyncingWithServer: false,
-    }
+
+    this.floatingVariables = [
+      'temperature',
+      'targetTemperature',
+      'targetTemperatureMax',
+      'mode',
+      'airVolume',
+      'airconSwitch',
+    ]
+
+    this.state = Object.assign(
+      {
+        isModifyingTemperature: false,
+        isSyncingWithServer: false,
+      },
+      this.floatingVariables.reduce(
+        (map, name) => ((map[name] = null), map),
+        {}
+      )
+    )
   }
 
   async nremoFetch(path, method = 'GET', body = undefined) {
@@ -91,7 +102,7 @@ export default class App extends React.Component {
   }
 
   shouldUpdateValue() {
-    const updateFrequencyInSeconds = 60
+    const updateFrequencyInSeconds = 180
     const timeLastFetched = localStorage.getItem('timeLastFetched')
     if (timeLastFetched === null) {
       return true
@@ -129,14 +140,7 @@ export default class App extends React.Component {
         Object.assign({ timeLastFetched: new Date().getTime() }, updatedValues)
       )
     } else {
-      this.loadCache([
-        'temperature',
-        'targetTemperature',
-        'targetTemperatureMax',
-        'mode',
-        'airVolume',
-        'airconSwitch',
-      ])
+      this.loadCache(this.floatingVariables)
     }
   }
 
@@ -166,26 +170,9 @@ export default class App extends React.Component {
     } = this.state
 
     return (
-      <div>
-        <div
-          style={{
-            background: 'linear-gradient(#ececec, #d6d6d6)',
-            height: '40px',
-            WebkitAppRegion: 'drag',
-          }}>
-          <div
-            style={{
-              textAlign: 'center',
-              fontFamily: 'BlinkMacSystemFont, sans-serif',
-              fontWeight: '500',
-              fontSize: '12px',
-              color: 'grey',
-              paddingTop: '12px',
-            }}>
-            Nature Remo
-          </div>
-        </div>
-        <div>
+      <Container>
+        <Header />
+        <MainView>
           <BarIndicator
             value={targetTemperature}
             maxValue={targetTemperatureMax}
@@ -195,7 +182,6 @@ export default class App extends React.Component {
           <Display
             temperature={temperature}
             targetTemperature={targetTemperature}
-            isModifying={isModifyingTemperature}
             isSyncing={isSyncingWithServer}
           />
           <TemperatureController
@@ -203,8 +189,19 @@ export default class App extends React.Component {
             onLeave={this.onLeave.bind(this)}
             onValueChanged={this.onValueChanged.bind(this)}
           />
-        </div>
-      </div>
+        </MainView>
+      </Container>
     )
   }
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`
+
+const MainView = styled.div`
+  flex-grow: 1;
+  position: relative;
+`

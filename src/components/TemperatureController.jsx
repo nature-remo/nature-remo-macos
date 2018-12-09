@@ -8,14 +8,18 @@ export default class TemperatureController extends React.Component {
     }
   }
 
-  onMouseDown(event) {
-    this.setState({ isDragging: true })
-
+  sendValue(event) {
     const {
       clientY,
       target: { clientHeight },
     } = event
-    this.props.onValueChanged(1.0 - clientY / clientHeight)
+    const offsetY = 56 // same as title bar height
+    this.props.onValueChanged(1.0 - (clientY - offsetY) / clientHeight)
+  }
+
+  onMouseDown(event) {
+    this.setState({ isDragging: true })
+    this.sendValue(event)
     this.props.onEnter()
   }
 
@@ -26,11 +30,7 @@ export default class TemperatureController extends React.Component {
 
   onMouseMove(event) {
     if (this.state.isDragging) {
-      const {
-        clientY,
-        target: { clientHeight },
-      } = event
-      this.props.onValueChanged(1.0 - clientY / clientHeight)
+      this.sendValue(event)
     }
   }
 
