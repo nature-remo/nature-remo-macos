@@ -1,122 +1,30 @@
 import React from 'react'
 import fetch from 'isomorphic-unfetch'
 
-const gradientTheme = {
-  warm: 'linear-gradient(#F76B1C, #FAD961)',
-  cold: 'linear-gradient(#80C3F3, #4A90E2)',
-}
+import BarIndicator from './components/BarIndicator'
+import TemperatureController from './components/TemperatureController'
+import Display from './components/Display'
+
 const token = process.env.NATURE_REMO_TOKEN
 
-const BarIndicator = ({
-  value,
-  maxValue = 32,
-  isModifying,
-  theme = 'warm',
-}) => (
-  <div
-    style={{
-      position: 'absolute',
-      width: '100%',
-      height: `${100 * (value / maxValue)}%`,
-      top: `${100 - 100 * (value / maxValue)}%`,
-      background: gradientTheme[theme],
-      transition: `all ${isModifying ? '0.2' : '0.8'}s`,
-    }}
-  />
-)
-
-const Display = ({ temperature, targetTemperature, isModifying }) => (
-  <div
-    style={{
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-      fontFamily: "'BlinkMacSystemFont', sans-serif",
-      color: 'black',
-    }}>
-    <div
-      style={{
-        fontSize: isModifying ? '140px' : '100px',
-        marginBottom: '30px',
-        transition: `all .5s`,
-      }}>
-      {targetTemperature}
-    </div>
-    <div style={{ fontSize: '15px' }}>気温</div>
-    <div style={{ fontSize: '40px' }}>{temperature}</div>
-  </div>
-)
-
-class Controller extends React.Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      isDragging: false,
-    }
-  }
-
-  onMouseDown(event) {
-    this.setState({ isDragging: true })
-    const {
-      clientY,
-      target: { clientHeight },
-    } = event
-    this.props.onValueChanged(1.0 - clientY / clientHeight)
-
-    this.props.onEnter()
-  }
-
-  onMouseUp(event) {
-    this.setState({ isDragging: false })
-    this.props.onLeave()
-  }
-
-  onMouseMove(event) {
-    if (this.state.isDragging) {
-      const {
-        clientY,
-        target: { clientHeight },
-      } = event
-      this.props.onValueChanged(1.0 - clientY / clientHeight)
-    }
-  }
-
-  render() {
-    return (
-      <div
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-        }}
-        onMouseDown={this.onMouseDown.bind(this)}
-        onMouseUp={this.onMouseUp.bind(this)}
-        onMouseMove={this.onMouseMove.bind(this)}
-      />
-    )
-  }
-}
-
-export default class App extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      isModifyingTemperature: false,
-      isSwitchedOn: null,
+      airconSwitch: null,
       mode: null,
-      volume: null,
+      airVolume: null,
       temperature: null,
       targetTemperature: null,
       targetTemperatureMax: null,
+      isModifyingTemperature: false,
       isRateLimitReached: false,
+      isSyncingWithServer: false,
     }
   }
 
-  async fetch(path, method = 'GET', body = undefined) {
+  async nremoFetch(path, method = 'GET', body = undefined) {
+    this.setState({ isSyncingWithServer: true })
     try {
       const res = await fetch(`https://api.nature.global/1/${path}`, {
         method: method,
@@ -127,70 +35,109 @@ export default class App extends React.Component {
         body: body,
       })
       const json = await res.json()
+      this.setState({ isSyncingWithServer: false })
       return json
     } catch (err) {
       console.log(err)
-      this.setState({ isRateLimitReached: true })
-      return {}
+      this.setState({ isSyncingWithServer: false })
+      return null
     }
-  }
-
-  async getSensorValue() {
-    const devices = await this.fetch('devices')
-    const device = devices[0]
-    const sensorValue = {
-      temperature: device.newest_events.te.val,
-      humidity: device.newest_events.hu.val,
-    }
-    return sensorValue
   }
 
   async getAircon() {
-    const appliances = await this.fetch('appliances')
-    const aircon = appliances.find(app => app.type === 'AC')
-    return aircon
+    const appliances = await this.nremoFetch('appliances')
+    return appliances.find(app => app.type === 'AC')
   }
 
-  async fetchSensorValue() {
-    const { temperature } = await this.getSensorValue()
+  async fetchSensorValueAndUpdateState() {
+    const devices = await this.nremoFetch('devices')
+    const device = devices[0]
+    const temperature = device.newest_events.te.val
     this.setState({ temperature })
+    return { temperature }
   }
 
-  async fetchAirconSettings() {
-    const aircon = await this.getAircon()
+  async fetchAirconSettingsAndUpdateState() {
     const {
       aircon: {
         range: { modes },
       },
       settings: { button, mode, temp, vol },
-    } = aircon
+    } = await this.getAircon()
     const targetTemperatureMax = Math.max(
       ...modes[mode].temp.map(s => Number(s))
     )
 
-    this.setState({
-      isSwitchedOn: button === 'power-off' ? false : true,
-      mode,
-      volume: vol,
+    const newState = {
       targetTemperature: Number(temp),
       targetTemperatureMax,
-    })
+      mode,
+      airVolume: vol,
+      airconSwitch: button === 'power-off' ? false : true,
+    }
+    this.setState(newState)
+    return newState
   }
 
   async applyAirconSettings() {
-    const { mode, targetTemperature, volume, isSwitchedOn } = this.state
+    const { mode, targetTemperature, airVolume, airconSwitch } = this.state
     const { id } = await this.getAircon()
 
-    const params = isSwitchedOn
-      ? `operation_mode=${mode}&temperature=${targetTemperature}&air_volume=${volume}`
+    const params = airconSwitch
+      ? `operation_mode=${mode}&temperature=${targetTemperature}&air_volume=${airVolume}`
       : 'button=power-off'
 
-    await this.fetch(`appliances/${id}/aircon_settings`, 'POST', params)
+    await this.nremoFetch(`appliances/${id}/aircon_settings`, 'POST', params)
+  }
+
+  shouldUpdateValue() {
+    const updateFrequencyInSeconds = 60
+    const timeLastFetched = localStorage.getItem('timeLastFetched')
+    if (timeLastFetched === null) {
+      return true
+    }
+    return (
+      new Date().getTime() - timeLastFetched > updateFrequencyInSeconds * 1000
+    )
+  }
+
+  saveCache(dict) {
+    for (const key of Object.keys(dict)) {
+      localStorage.setItem(key, dict[key])
+    }
+  }
+
+  loadCache(keys) {
+    let newState = {}
+    for (const key of keys) {
+      newState[key] = localStorage.getItem(key)
+    }
+    this.setState(newState)
   }
 
   async componentDidMount() {
-    await this.fetchSensorValue()
-    await this.fetchAirconSettings()
+    if (this.shouldUpdateValue()) {
+      const updatedValues = Object.assign(
+        {},
+        ...(await Promise.all([
+          this.fetchSensorValueAndUpdateState(),
+          this.fetchAirconSettingsAndUpdateState(),
+        ]))
+      )
+      console.log(updatedValues)
+      this.saveCache(
+        Object.assign({ timeLastFetched: new Date().getTime() }, updatedValues)
+      )
+    } else {
+      this.loadCache([
+        'temperature',
+        'targetTemperature',
+        'targetTemperatureMax',
+        'mode',
+        'airVolume',
+        'airconSwitch',
+      ])
+    }
   }
 
   onEnter() {
@@ -210,36 +157,53 @@ export default class App extends React.Component {
 
   render() {
     const {
-      temperature,
-      targetTemperature,
+      temperature = 0,
+      targetTemperature = 0,
+      targetTemperatureMax = 32,
       isModifyingTemperature,
+      isSyncingWithServer,
+      mode,
     } = this.state
 
     return (
-      <div
-        style={{
-          backgroundColor: 'white',
-          width: '100%',
-          height: '100%',
-          position: 'absolute',
-        }}>
-        <BarIndicator
-          isModifying={isModifyingTemperature}
-          value={targetTemperature === null ? 0 : targetTemperature}
-          maxValue={32}
-        />
-        <Display
-          temperature={temperature === null ? 'Loading' : temperature}
-          targetTemperature={
-            targetTemperature === null ? 'Loading' : targetTemperature
-          }
-          isModifying={isModifyingTemperature}
-        />
-        <Controller
-          onEnter={this.onEnter.bind(this)}
-          onLeave={this.onLeave.bind(this)}
-          onValueChanged={this.onValueChanged.bind(this)}
-        />
+      <div>
+        <div
+          style={{
+            background: 'linear-gradient(#ececec, #d6d6d6)',
+            height: '40px',
+            WebkitAppRegion: 'drag',
+          }}>
+          <div
+            style={{
+              textAlign: 'center',
+              fontFamily: 'BlinkMacSystemFont, sans-serif',
+              fontWeight: '500',
+              fontSize: '12px',
+              color: 'grey',
+              paddingTop: '12px',
+            }}>
+            Nature Remo
+          </div>
+        </div>
+        <div>
+          <BarIndicator
+            value={targetTemperature}
+            maxValue={targetTemperatureMax}
+            mode={mode}
+            isModifying={isModifyingTemperature}
+          />
+          <Display
+            temperature={temperature}
+            targetTemperature={targetTemperature}
+            isModifying={isModifyingTemperature}
+            isSyncing={isSyncingWithServer}
+          />
+          <TemperatureController
+            onEnter={this.onEnter.bind(this)}
+            onLeave={this.onLeave.bind(this)}
+            onValueChanged={this.onValueChanged.bind(this)}
+          />
+        </div>
       </div>
     )
   }
