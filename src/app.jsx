@@ -77,8 +77,12 @@ export default class App extends React.Component {
     } = this.state
 
     const params = airconSwitch
-      ? `operation_mode=${mode}&temperature=${targetTemperature}&air_volume=${airVolume}`
-      : 'button=power-off'
+      ? {
+          operation_mode: mode,
+          temperature: targetTemperature,
+          air_volume: airVolume,
+        }
+      : { button: 'power-off' }
 
     await this.natureRemo.updateAirconSettings(airconID, params)
   }
@@ -133,8 +137,9 @@ export default class App extends React.Component {
   }
 
   async onLeave() {
-    this.setState({ isModifyingTemperature: false })
+    this.setState({ isSyncingWithServer: true, isModifyingTemperature: false })
     await this.applyAirconSettings()
+    this.setState({ isSyncingWithServer: false })
   }
 
   onValueChanged(value) {

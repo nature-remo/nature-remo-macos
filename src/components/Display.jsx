@@ -1,14 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Display = props => (
-  <Container>
-    <LargeGauge>{props.targetTemperature}</LargeGauge>
+const Display = ({ targetTemperature, temperature, isSyncing }) => (
+  <Container isSyncing={isSyncing}>
+    <LargeGauge>{targetTemperature}</LargeGauge>
     <Label>気温</Label>
-    <SmallGauge>{props.temperature}</SmallGauge>
+    <SmallGauge>{temperature}</SmallGauge>
   </Container>
 )
 
+// ------
+// styles
+// ------
 const Container = styled.div`
   position: absolute;
   width: 100%;
@@ -19,7 +22,7 @@ const Container = styled.div`
   flex-direction: column;
   font-family: 'BlinkMacSystemFont', sans-serif;
   color: black;
-  transition: all 1s,
+  transition: all 0.5s ease-out;
   filter: ${props => (props.isSyncing ? 'blur(15px)' : 'none')};
 `
 
