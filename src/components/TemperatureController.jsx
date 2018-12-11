@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 
 export default class TemperatureController extends React.Component {
   constructor(props) {
@@ -18,14 +19,9 @@ export default class TemperatureController extends React.Component {
   }
 
   onMouseDown(event) {
-    this.setState({ isDragging: true })
-    this.sendValue(event)
     this.props.onEnter()
-  }
-
-  onMouseUp(event) {
-    this.setState({ isDragging: false })
-    this.props.onLeave()
+    this.sendValue(event)
+    this.setState({ isDragging: true })
   }
 
   onMouseMove(event) {
@@ -34,18 +30,24 @@ export default class TemperatureController extends React.Component {
     }
   }
 
+  onMouseUp(event) {
+    this.setState({ isDragging: false })
+    this.props.onLeave()
+  }
+
   render() {
     return (
-      <div
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-        }}
+      <Container
         onMouseDown={this.onMouseDown.bind(this)}
-        onMouseUp={this.onMouseUp.bind(this)}
         onMouseMove={this.onMouseMove.bind(this)}
+        onMouseUp={this.onMouseUp.bind(this)}
       />
     )
   }
 }
+
+const Container = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`
