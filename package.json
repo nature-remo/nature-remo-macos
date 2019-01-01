@@ -51,9 +51,9 @@
     "electron-devtools-installer": "^2.1.0",
     "electron-squirrel-startup": "^1.0.0",
     "nature-remo": "^0.3.0",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-hot-loader": "^4.3.12",
+    "react": "^16.7.0-alpha.2",
+    "react-dom": "^16.7.0-alpha.2",
+    "react-hot-loader": "^4.6.3",
     "react-router-dom": "^4.3.1",
     "styled-components": "^4.1.2"
   },
