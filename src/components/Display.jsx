@@ -23,7 +23,7 @@ const Container = styled.div`
   font-family: 'BlinkMacSystemFont', sans-serif;
   color: black;
   transition: all 0.5s ease-out;
-  filter: ${props => (props.isSyncing ? 'blur(15px)' : 'none')};
+  filter: ${(props) => (props.isSyncing ? 'blur(15px)' : 'none')};
 `
 
 const Label = styled.div`

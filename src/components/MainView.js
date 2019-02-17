@@ -46,7 +46,7 @@ export default class MainView extends React.Component {
 
   async fetchAirconSettingsAndUpdateState() {
     const appliances = await this.natureRemo.getAppliances()
-    const aircon = appliances.find(app => app.type === 'AC')
+    const aircon = appliances.find((app) => app.type === 'AC')
     const {
       id,
       aircon: {
@@ -55,7 +55,7 @@ export default class MainView extends React.Component {
       settings: { button, mode, temp, vol },
     } = aircon
     const targetTemperatureMax = Math.max(
-      ...modes[mode].temp.map(s => Number(s))
+      ...modes[mode].temp.map((s) => Number(s))
     )
 
     const newState = {

@@ -14,7 +14,7 @@ export default function SettingsView() {
     <Container>
       <input
         type="text"
-        onChange={e => setToken(e.target.value)}
+        onChange={(e) => setToken(e.target.value)}
         defaultValue={token}
       />
       <div>{token}</div>
