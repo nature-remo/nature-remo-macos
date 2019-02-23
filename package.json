@@ -9,16 +9,17 @@
     "make": "electron-forge make",
     "package": "electron-forge package",
     "publish": "electron-forge publish",
-    "start": "electron-forge start"
+    "start": "electron-forge start",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "electron-compile": "^6.4.3",
     "electron-devtools-installer": "^2.1.0",
     "electron-squirrel-startup": "^1.0.0",
-    "nature-remo": "^0.3.0",
-    "react": "^16.8.2",
-    "react-dom": "^16.8.2",
-    "react-hot-loader": "^4.6.5",
+    "nature-remo": "^0.3.1",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
+    "react-hot-loader": "^4.7.1",
     "react-router-dom": "^4.3.1",
     "styled-components": "^4.1.2"
   },
@@ -29,11 +30,14 @@
     "babel-preset-react": "^6.24.1",
     "electron-forge": "^5.2.4",
     "electron-prebuilt-compile": "4.0.0",
-    "eslint": "^5.14.0",
+    "eslint": "^5.14.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4"
+  },
+  "bugs": {
+    "url": "https://github.com/uetchy/nature-remo-macos/issues"
   },
   "config": {
     "forge": {
@@ -67,9 +71,14 @@
       }
     }
   },
+  "homepage": "https://github.com/uetchy/nature-remo-macos",
   "keywords": [
     "nature-remo"
   ],
   "license": "MIT",
-  "productName": "Nature Remo"
+  "productName": "Nature Remo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uetchy/nature-remo-macos.git"
+  }
 }
