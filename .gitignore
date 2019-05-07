@@ -1,4 +1,6 @@
 .env
+.webpack
+/out
 
 # Logs
 logs
