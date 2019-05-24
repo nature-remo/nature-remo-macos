@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const BarIndicator = (props) => {
+export default function BarIndicator(props) {
   return (
     <Container {...props}>
       <Handle {...props} />
@@ -11,7 +11,7 @@ const BarIndicator = (props) => {
 
 const gradientTheme = {
   warm: 'linear-gradient(#F76B1C, #FAD961)',
-  cold: 'linear-gradient(#80C3F3, #4A90E2)',
+  cool: 'linear-gradient(#80C3F3, #4A90E2)',
 }
 
 const Handle = styled.div`
@@ -25,8 +25,8 @@ const Handle = styled.div`
 `
 
 const Container = styled.div`
-  position: absolute
-  width: 100%
+  position: absolute;
+  width: 100%;
   height: ${(props) => 100 * (props.value / props.maxValue)}%;
   opacity: ${(props) => (props.isModifying ? '0.8' : '1.0')};
   top: ${(props) => 100 - 100 * (props.value / props.maxValue)}%;
@@ -37,5 +37,3 @@ const Container = styled.div`
   border-top-right-radius: ${(props) => (props.isModifying ? '20px' : '0')};
   transition: all ${(props) => (props.isModifying ? '0.2' : '0.8')}s;
 `
-
-export default BarIndicator

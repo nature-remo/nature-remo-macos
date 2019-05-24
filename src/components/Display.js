@@ -4,7 +4,6 @@ import styled from 'styled-components'
 const Display = ({ targetTemperature, temperature, isSyncing }) => (
   <Container isSyncing={isSyncing}>
     <LargeGauge>{targetTemperature}</LargeGauge>
-    <Label>気温</Label>
     <SmallGauge>{temperature}</SmallGauge>
   </Container>
 )
@@ -26,17 +25,22 @@ const Container = styled.div`
   filter: ${(props) => (props.isSyncing ? 'blur(15px)' : 'none')};
 `
 
-const Label = styled.div`
-  font-size: 15px;
-`
-
 const LargeGauge = styled.div`
   font-size: 100px;
-  margin-bottom: 30px;
+  font-weight: 100;
+  margin-bottom: 10px;
 `
 
 const SmallGauge = styled.div`
-  font-size: 40px;
+  font-size: 30px;
+  font-weight: 300;
+  border: 2px solid black;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  text-align: center;
+  line-height: 2em;
+  color: black;
 `
 
 export default Display

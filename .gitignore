@@ -1,13 +1,18 @@
-.env
-.webpack
-/out
 
+# Created by https://www.gitignore.io/api/node
+# Edit at https://www.gitignore.io/?templates=node
+
+### Node ###
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Runtime data
 pids
@@ -60,6 +65,7 @@ typings/
 
 # dotenv environment variables file
 .env
+.env.test
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -79,5 +85,7 @@ typings/
 # FuseBox cache
 .fusebox/
 
-#DynamoDB Local files 
-.dynamodb/ 
+# DynamoDB Local files
+.dynamodb/
+
+# End of https://www.gitignore.io/api/node

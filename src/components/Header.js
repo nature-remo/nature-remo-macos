@@ -23,6 +23,7 @@ const Title = styled.div`
   font-weight: 500;
   font-size: 12px;
   color: grey;
+  user-select: none;
 `
 
 export default Header

@@ -2,65 +2,80 @@
   "name": "nature-remo-macos",
   "description": "Nature Remo for macOS",
   "version": "1.0.0",
-  "author": "uetchy",
-  "main": "src/index.js",
+  "author": {
+    "name": "Yasuaki Uechi",
+    "email": "y@uechi.io",
+    "url": "https://uechi.io"
+  },
+  "main": "public/electron.js",
   "scripts": {
-    "lint": "eslint --cache --color --ext .jsx,.js src",
-    "make": "electron-forge make",
-    "package": "electron-forge package",
-    "publish": "electron-forge publish",
-    "start": "electron-forge start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "craco build",
+    "dev:cra": "BROWSER=none craco start",
+    "dev:electron": "wait-on http://localhost:3000 && electron .",
+    "eject": "craco eject",
+    "package": "build -mw",
+    "postinstall": "electron-builder install-app-deps",
+    "prepackage": "yarn build",
+    "start": "run-p dev:*",
+    "test": "craco test"
   },
   "dependencies": {
-    "electron-compile": "^6.4.3",
-    "electron-devtools-installer": "^2.1.0",
-    "electron-squirrel-startup": "^1.0.0",
+    "@craco/craco": "^5.0.2",
+    "electron-is-dev": "^1.1.0",
     "nature-remo": "^0.3.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-hot-loader": "^4.8.4",
     "react-router-dom": "^5.0.0",
+    "react-scripts": "3.0.1",
+    "react-tippy": "^1.2.3",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.0",
-    "@babel/preset-env": "^7.4.2",
-    "@electron-forge/cli": "6.0.0-beta.34",
-    "@electron-forge/maker-deb": "6.0.0-beta.34",
-    "@electron-forge/maker-rpm": "6.0.0-beta.34",
-    "@electron-forge/maker-squirrel": "6.0.0-beta.34",
-    "@electron-forge/maker-zip": "6.0.0-beta.34",
-    "@electron-forge/plugin-webpack": "^6.0.0-beta.34",
-    "@webpack-cli/init": "^0.1.5",
-    "babel-loader": "^8.0.5",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-es2015-classes": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "electron": "4.1.3",
-    "electron-prebuilt-compile": "4.0.0",
-    "eslint": "^5.15.3",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-react": "^7.12.4",
-    "uglifyjs-webpack-plugin": "^2.1.2",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0"
+    "electron": "^5.0.1",
+    "electron-builder": "^20.40.2",
+    "husky": "^2.2.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.10.0",
+    "typescript": "^3.4.5",
+    "wait-on": "^3.2.0"
   },
-  "bugs": {
-    "url": "https://github.com/uetchy/nature-remo-macos/issues"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
-  "homepage": "https://github.com/uetchy/nature-remo-macos",
-  "keywords": [
-    "nature-remo"
-  ],
+  "build": {
+    "appId": "io.uechi.nature-remo-macos",
+    "productName": "Nature Remo",
+    "copyright": "Copyright © 2019 ${author}",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "homepage": ".",
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
   "license": "MIT",
-  "productName": "Nature Remo",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/uetchy/nature-remo-macos.git"
-  }
+  "private": true
 }

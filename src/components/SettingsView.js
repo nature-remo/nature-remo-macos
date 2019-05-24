@@ -12,19 +12,34 @@ export default function SettingsView() {
 
   return (
     <Container>
-      <input
+      <InputForm
         type="text"
         onChange={(e) => setToken(e.target.value)}
         defaultValue={token}
       />
-      <div>{token}</div>
-      <button onClick={onSave}>Save</button>
+      <SubmitButton onClick={onSave}>Save</SubmitButton>
       <Link to="/">Close</Link>
     </Container>
   )
 }
 
 const Container = styled.div`
-  flex-grow: 1;
+  padding: 15px;
   position: relative;
+`
+
+const InputForm = styled.input`
+  width: 100%;
+  padding: 10px;
+  font-size: 12px;
+  outline: none;
+`
+
+const SubmitButton = styled.button`
+  margin-top: 5px;
+  padding: 15px 30px;
+  background-color: deepskyblue;
+  color: white;
+  border: none;
+  border-radius: 2px;
 `
