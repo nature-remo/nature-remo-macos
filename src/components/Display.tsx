@@ -1,17 +1,29 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Display = ({ targetTemperature, temperature, isSyncing }) => (
+type Props = {
+  targetTemperature: number
+  temperature: number
+  isSyncing: boolean
+}
+
+const Display: React.FC<Props> = ({
+  targetTemperature,
+  temperature,
+  isSyncing,
+}) => (
   <Container isSyncing={isSyncing}>
     <LargeGauge>{targetTemperature}</LargeGauge>
     <SmallGauge>{temperature}</SmallGauge>
   </Container>
 )
 
+export default Display
+
 // ------
 // styles
 // ------
-const Container = styled.div`
+const Container = styled.div<Pick<Props, 'isSyncing'>>`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -42,5 +54,3 @@ const SmallGauge = styled.div`
   line-height: 2em;
   color: black;
 `
-
-export default Display

@@ -1,12 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Header = ({ onClick, children }) => (
+const Header: React.FC = ({ children }) => (
   <Container>
     <Title>Nature Remo</Title>
     {children}
   </Container>
 )
+
+export default Header
 
 const Container = styled.div`
   height: 40px;
@@ -25,5 +27,3 @@ const Title = styled.div`
   color: grey;
   user-select: none;
 `
-
-export default Header

@@ -1,42 +1,56 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
-import * as NatureRemo from 'nature-remo'
+import { Cloud, IAirconModeType } from 'nature-remo'
+import { History } from 'history'
 
 import BarIndicator from './BarIndicator'
 import Display from './Display'
 import TemperatureController from './TemperatureController'
 
-function useAircon(token) {
-  const natureRemo = useRef()
-  const [roomTemperature, setRoomTemperature] = useState(0)
-  const [airconID, setAirconID] = useState(null)
-  const [airconTemperature, setAirconTemperature] = useState(0)
-  const [airconTemperatureMax, setAirconTemperatureMax] = useState(32)
-  const [airconMode, setAirconMode] = useState(null)
-  const [airconVolume, setAirconVolume] = useState(null)
-  const [airconStatus, setAirconStatus] = useState(null)
+type Aircon = {
+  roomTemperature: number
+  airconTemperature: number
+  airconTemperatureMax: number
+  airconMode: IAirconModeType
+  airconVolume: string
+  airconStatus: boolean
+  airconID: string
+}
+
+function useAircon(
+  token: string | null
+): [Aircon, (temperature: number) => Promise<any>] {
+  const natureRemo = useRef<Cloud>()
+  const [roomTemperature, setRoomTemperature] = useState<number>(0)
+  const [airconID, setAirconID] = useState<string>('')
+  const [airconTemperature, setAirconTemperature] = useState<number>(0)
+  const [airconTemperatureMax, setAirconTemperatureMax] = useState<number>(32)
+  const [airconMode, setAirconMode] = useState<IAirconModeType>('auto')
+  const [airconVolume, setAirconVolume] = useState<string>('')
+  const [airconStatus, setAirconStatus] = useState<boolean>(false)
 
   useEffect(() => {
-    natureRemo.current = new NatureRemo.Cloud(token)
+    natureRemo.current = new Cloud(token || '')
   }, [token])
 
   useEffect(() => {
     async function situateRemoteValue() {
       console.log('situate values')
-      const device = (await natureRemo.current.getDevices())[0]
-      const roomTemperature = Math.floor(Number(device.newest_events.te.val))
+      const sensorValue = await natureRemo.current!.getSensorValue()
+
+      const roomTemperature = Math.floor(sensorValue.temperature)
       setRoomTemperature(roomTemperature)
 
-      const appliances = await natureRemo.current.getAppliances()
-      const aircon = appliances.find((app) => app.type === 'AC')
+      const appliances = await natureRemo.current!.getAppliances()
+      const aircon = appliances.find((app) => app.type === 'AC')!
       const airconID = aircon.id
       const airconMode = aircon.settings.mode
       const airconStatus = aircon.settings.button !== 'power-off'
       const airconTemperature = Number(aircon.settings.temp)
       const airconTemperatureMax = Math.max(
-        ...aircon.aircon.range.modes[airconMode].temp.map((s) => Number(s))
+        ...aircon.aircon!.range.modes[airconMode].temp.map((s) => Number(s))
       )
-      const airconVolume = Number(aircon.settings.vol)
+      const airconVolume = aircon.settings.vol
 
       setAirconID(airconID)
       setAirconMode(airconMode)
@@ -49,6 +63,8 @@ function useAircon(token) {
     if (shouldUpdateValue()) {
       situateRemoteValue()
     } else {
+      console.log('restore')
+
       restoreCache()
     }
   }, [natureRemo])
@@ -56,12 +72,12 @@ function useAircon(token) {
   useEffect(() => {
     localStorage.setItem('airconID', airconID)
     localStorage.setItem('airconMode', airconMode)
-    localStorage.setItem('airconStatus', airconStatus)
-    localStorage.setItem('airconTemperature', airconTemperature)
-    localStorage.setItem('airconTemperatureMax', airconTemperatureMax)
-    localStorage.setItem('airconVolume', airconVolume)
-    localStorage.setItem('timeLastFetched', new Date().getTime())
-    localStorage.setItem('roomTemperature', roomTemperature)
+    localStorage.setItem('airconStatus', airconStatus ? '1' : '0')
+    localStorage.setItem('airconTemperature', String(airconTemperature))
+    localStorage.setItem('airconTemperatureMax', String(airconTemperatureMax))
+    localStorage.setItem('airconVolume', String(airconVolume))
+    localStorage.setItem('timeLastFetched', String(new Date().getTime()))
+    localStorage.setItem('roomTemperature', String(roomTemperature))
   }, [
     airconID,
     airconMode,
@@ -74,8 +90,9 @@ function useAircon(token) {
 
   function shouldUpdateValue() {
     console.log('shouldUpdateValue')
-    const updateFrequencyInSeconds = 180
-    const timeLastFetched = localStorage.getItem('timeLastFetched')
+    const updateFrequencyInSeconds = 30
+    const timeLastFetched = Number(localStorage.getItem('timeLastFetched'))
+
     if (!timeLastFetched) {
       return true
     }
@@ -86,16 +103,16 @@ function useAircon(token) {
 
   function restoreCache() {
     setAirconTemperature(Number(localStorage.getItem('airconTemperature')))
-    setAirconID(localStorage.getItem('airconID'))
-    setAirconMode(localStorage.getItem('airconMode'))
-    setAirconStatus(
-      localStorage.getItem('airconStatus') === 'true' ? true : false
-    )
-    setAirconTemperature(Number(localStorage.getItem('airconTemperature')))
     setAirconTemperatureMax(
       Number(localStorage.getItem('airconTemperatureMax'))
     )
-    setAirconVolume(Number(localStorage.getItem('airconVolume')))
+    setAirconID(localStorage.getItem('airconID')!)
+    setAirconMode(localStorage.getItem('airconMode') as IAirconModeType)
+    setAirconStatus(
+      localStorage.getItem('airconStatus') === 'true' ? true : false
+    )
+    setAirconVolume(localStorage.getItem('airconVolume')!)
+
     setRoomTemperature(Number(localStorage.getItem('roomTemperature')))
   }
 
@@ -108,19 +125,19 @@ function useAircon(token) {
         }
       : { button: 'power-off' }
 
-    await natureRemo.current.updateAirconSettings(airconID, params)
+    await natureRemo.current!.updateAirconSettings(airconID, params)
   }
 
-  async function setTemperature(temperature) {
+  async function setTemperature(temperature: number) {
     setAirconTemperature(temperature)
     await applyAirconSettings()
   }
 
   return [
     {
-      temperature: roomTemperature,
-      targetTemperature: airconTemperature,
-      targetTemperatureMax: airconTemperatureMax,
+      roomTemperature,
+      airconTemperature,
+      airconTemperatureMax,
       airconMode,
       airconVolume,
       airconStatus,
@@ -130,7 +147,7 @@ function useAircon(token) {
   ]
 }
 
-export default function MainView({ history }) {
+const MainView: React.FC<{ history: History }> = ({ history }) => {
   const tokenRef = useRef(localStorage.getItem('token'))
   const [aircon, setAirconTemperature] = useAircon(tokenRef.current)
 
@@ -145,21 +162,21 @@ export default function MainView({ history }) {
   }, [history])
 
   useEffect(() => {
-    setTargetValue(aircon.targetTemperature)
-  }, [aircon.targetTemperature])
+    setTargetValue(aircon.airconTemperature)
+  }, [aircon.airconTemperature])
 
   function onEnterModifyState() {
     setIsModifyingTemperature(true)
   }
 
-  function onHandleMove(value) {
-    const targetTemperature = Math.round(value * aircon.targetTemperatureMax)
-    setTargetValue(targetTemperature)
+  function onHandleMove(value: number) {
+    const airconTemperature = Math.round(value * aircon.airconTemperatureMax)
+    setTargetValue(airconTemperature)
   }
 
   async function onLeaveHandle() {
     setIsModifyingTemperature(false)
-    if (aircon.targetTemperature !== targetValue) {
+    if (aircon.airconTemperature !== targetValue) {
       setIsSyncingWithServer(true)
       await setAirconTemperature(targetValue)
       setIsSyncingWithServer(false)
@@ -170,12 +187,12 @@ export default function MainView({ history }) {
     <Container>
       <BarIndicator
         value={targetValue}
-        maxValue={aircon.targetTemperatureMax}
+        maxValue={aircon.airconTemperatureMax}
         mode={aircon.airconMode}
         isModifying={isModifyingTemperature}
       />
       <Display
-        temperature={aircon.temperature}
+        temperature={aircon.roomTemperature}
         targetTemperature={targetValue}
         isSyncing={isSyncingWithServer}
       />
@@ -187,6 +204,8 @@ export default function MainView({ history }) {
     </Container>
   )
 }
+
+export default MainView
 
 const Container = styled.div`
   flex-grow: 1;

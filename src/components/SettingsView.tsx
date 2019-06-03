@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-export default function SettingsView() {
-  const [token, setToken] = useState(() => localStorage.getItem('token'))
+const SettingsView: React.FC = () => {
+  const [token, setToken] = useState<string>(
+    localStorage.getItem('token') || ''
+  )
 
   function onSave() {
     console.log(token)
@@ -22,6 +24,8 @@ export default function SettingsView() {
     </Container>
   )
 }
+
+export default SettingsView
 
 const Container = styled.div`
   padding: 15px;

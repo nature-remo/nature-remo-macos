@@ -9,7 +9,7 @@ import Header from './components/Header'
 import MainView from './components/MainView'
 import SettingsView from './components/SettingsView'
 
-function App() {
+export default function App() {
   return (
     <Container>
       <Router>
@@ -42,8 +42,5 @@ const SettingsButton = styled.div`
   right: 10px;
   top: 10px;
   margin-left: 100px;
-  // background: black;
   content: 'S';
 `
-
-export default App

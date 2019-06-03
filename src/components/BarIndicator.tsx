@@ -1,7 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
+import { IAirconModeType } from 'nature-remo'
 
-export default function BarIndicator(props) {
+type Props = {
+  value: number
+  maxValue: number
+  mode: IAirconModeType
+  isModifying: boolean
+}
+
+const BarIndicator: React.FC<Props> = (props) => {
   return (
     <Container {...props}>
       <Handle {...props} />
@@ -9,12 +17,17 @@ export default function BarIndicator(props) {
   )
 }
 
-const gradientTheme = {
+export default BarIndicator
+
+const gradientTheme: { [key in IAirconModeType]: string } = {
   warm: 'linear-gradient(#F76B1C, #FAD961)',
   cool: 'linear-gradient(#80C3F3, #4A90E2)',
+  dry: 'linear-gradient(#80C3F3, #4A90E2)',
+  blow: 'linear-gradient(#F76B1C, #FAD961)',
+  auto: 'linear-gradient(#80C3F3, #4A90E2)',
 }
 
-const Handle = styled.div`
+const Handle = styled.div<Props>`
   width: 100px;
   height: 8px;
   background: ${(props) =>
@@ -24,7 +37,7 @@ const Handle = styled.div`
   transition: all 0.5s;
 `
 
-const Container = styled.div`
+const Container = styled.div<Props>`
   position: absolute;
   width: 100%;
   height: ${(props) => 100 * (props.value / props.maxValue)}%;
