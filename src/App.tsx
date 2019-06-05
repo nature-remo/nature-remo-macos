@@ -8,14 +8,16 @@ import { HashRouter as Router, Route, Link, Switch } from 'react-router-dom'
 import Header from './components/Header'
 import MainView from './components/MainView'
 import SettingsView from './components/SettingsView'
+import { IoIosSettings, IoIosPower } from 'react-icons/io'
 
 export default function App() {
   return (
     <Container>
       <Router>
         <Header>
-          <Link to="/settings/">
-            <SettingsButton />
+          <IoIosPower />
+          <Link to={{ pathname: '/settings/', state: { modal: true } }}>
+            <IoIosSettings />
           </Link>
         </Header>
         <Switch>
@@ -33,14 +35,4 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   position: absolute;
-`
-
-const SettingsButton = styled.div`
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  right: 10px;
-  top: 10px;
-  margin-left: 100px;
-  content: 'S';
 `

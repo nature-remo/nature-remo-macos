@@ -26,6 +26,7 @@
     "nature-remo": "^1.0.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-icons": "^3.7.0",
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.1",
     "react-tippy": "^1.2.3",

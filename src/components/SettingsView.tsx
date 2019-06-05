@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { History } from 'history'
 
-const SettingsView: React.FC = () => {
+const SettingsView: React.FC<{ history: History }> = ({ history }) => {
   const [token, setToken] = useState<string>(
     localStorage.getItem('token') || ''
   )
 
-  function onSave() {
-    console.log(token)
+  function onSave(e: React.MouseEvent) {
+    e.stopPropagation()
     localStorage.setItem('token', token)
+    history.goBack()
   }
 
   return (
@@ -20,7 +21,6 @@ const SettingsView: React.FC = () => {
         defaultValue={token}
       />
       <SubmitButton onClick={onSave}>Save</SubmitButton>
-      <Link to="/">Close</Link>
     </Container>
   )
 }

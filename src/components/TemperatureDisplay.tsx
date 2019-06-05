@@ -7,7 +7,7 @@ type Props = {
   isSyncing: boolean
 }
 
-const Display: React.FC<Props> = ({
+const TemperatureDisplay: React.FC<Props> = ({
   targetTemperature,
   temperature,
   isSyncing,
@@ -18,7 +18,7 @@ const Display: React.FC<Props> = ({
   </Container>
 )
 
-export default Display
+export default TemperatureDisplay
 
 // ------
 // styles
