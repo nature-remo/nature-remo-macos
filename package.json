@@ -20,7 +20,7 @@
     "test": "craco test"
   },
   "dependencies": {
-    "@craco/craco": "^5.2.3",
+    "@craco/craco": "^5.2.4",
     "@types/react": "^16.8.23",
     "electron-is-dev": "^1.1.0",
     "nature-remo": "^1.0.2",
