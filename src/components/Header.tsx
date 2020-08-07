@@ -1,6 +1,6 @@
-import React from 'react'
-import styled from 'styled-components'
-import { IconContext } from 'react-icons'
+import React from 'react';
+import { IconContext } from 'react-icons';
+import styled from 'styled-components';
 
 const Header: React.FC = ({ children }) => (
   <Container>
@@ -11,16 +11,16 @@ const Header: React.FC = ({ children }) => (
       </IconContext.Provider>
     </Icons>
   </Container>
-)
+);
 
-export default Header
+export default Header;
 
 const Container = styled.div`
   position: relative;
   height: 40px;
   background: linear-gradient(#ececec, #d6d6d6);
   -webkit-app-region: drag;
-`
+`;
 
 const Title = styled.div`
   position: absolute;
@@ -32,7 +32,7 @@ const Title = styled.div`
   font-size: 12px;
   color: grey;
   user-select: none;
-`
+`;
 
 const Icons = styled.div`
   position: absolute;
@@ -46,4 +46,4 @@ const Icons = styled.div`
   a {
     padding-right: 10px;
   }
-`
+`;

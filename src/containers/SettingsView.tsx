@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { History } from 'history'
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { History } from 'history';
 
 const SettingsView: React.FC<{ history: History }> = ({ history }) => {
   const [token, setToken] = useState<string>(
-    localStorage.getItem('token') || ''
-  )
+    localStorage.getItem('token') || '',
+  );
 
   function onSave(e: React.MouseEvent) {
-    e.stopPropagation()
-    localStorage.setItem('token', token)
-    history.goBack()
+    e.stopPropagation();
+    localStorage.setItem('token', token);
+    history.goBack();
   }
 
   return (
@@ -22,22 +22,22 @@ const SettingsView: React.FC<{ history: History }> = ({ history }) => {
       />
       <SubmitButton onClick={onSave}>Save</SubmitButton>
     </Container>
-  )
-}
+  );
+};
 
-export default SettingsView
+export default SettingsView;
 
 const Container = styled.div`
   padding: 15px;
   position: relative;
-`
+`;
 
 const InputForm = styled.input`
   width: 100%;
   padding: 10px;
   font-size: 12px;
   outline: none;
-`
+`;
 
 const SubmitButton = styled.button`
   margin-top: 5px;
@@ -46,4 +46,4 @@ const SubmitButton = styled.button`
   color: white;
   border: none;
   border-radius: 2px;
-`
+`;

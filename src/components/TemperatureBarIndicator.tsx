@@ -1,23 +1,23 @@
-import React from 'react'
-import styled from 'styled-components'
-import { IAirconModeType } from 'nature-remo'
+import React from 'react';
+import styled from 'styled-components';
+import { IAirconModeType } from 'nature-remo';
 
 type Props = {
-  value: number
-  maxValue: number
-  mode: IAirconModeType
-  isModifying: boolean
-}
+  value: number;
+  maxValue: number;
+  mode: IAirconModeType;
+  isModifying: boolean;
+};
 
 const BarIndicator: React.FC<Props> = (props) => {
   return (
     <Container {...props}>
       <Handle {...props} />
     </Container>
-  )
-}
+  );
+};
 
-export default BarIndicator
+export default BarIndicator;
 
 const gradientTheme: { [key in IAirconModeType]: string } = {
   warm: 'linear-gradient(#F76B1C, #FAD961)',
@@ -25,7 +25,7 @@ const gradientTheme: { [key in IAirconModeType]: string } = {
   dry: 'linear-gradient(#80C3F3, #4A90E2)',
   blow: 'linear-gradient(#F76B1C, #FAD961)',
   auto: 'linear-gradient(#80C3F3, #4A90E2)',
-}
+};
 
 const Handle = styled.div<Props>`
   width: 100px;
@@ -35,7 +35,7 @@ const Handle = styled.div<Props>`
   border-radius: 4px;
   margin-top: 8px;
   transition: all 0.5s;
-`
+`;
 
 const Container = styled.div<Props>`
   position: absolute;
@@ -49,4 +49,4 @@ const Container = styled.div<Props>`
   border-top-left-radius: ${(props) => (props.isModifying ? '20px' : '0')};
   border-top-right-radius: ${(props) => (props.isModifying ? '20px' : '0')};
   transition: all ${(props) => (props.isModifying ? '0.2' : '0.8')}s;
-`
+`;

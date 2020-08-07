@@ -1,8 +1,7 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { createGlobalStyle } from 'styled-components'
-
-import App from './App'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { createGlobalStyle } from 'styled-components';
+import App from './App';
 
 const GlobalStyle = createGlobalStyle`
 * {
@@ -16,12 +15,12 @@ body {
   background-color: rgba(0,0,0,0);
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
-`
+`;
 
 ReactDOM.render(
   <>
     <GlobalStyle />
     <App />
   </>,
-  document.getElementById('root')
-)
+  document.getElementById('root'),
+);

@@ -1,11 +1,11 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 
 type Props = {
-  targetTemperature: number
-  temperature: number
-  isSyncing: boolean
-}
+  targetTemperature: number;
+  temperature: number;
+  isSyncing: boolean;
+};
 
 const TemperatureDisplay: React.FC<Props> = ({
   targetTemperature,
@@ -16,9 +16,9 @@ const TemperatureDisplay: React.FC<Props> = ({
     <LargeGauge>{targetTemperature}</LargeGauge>
     <SmallGauge>{temperature}</SmallGauge>
   </Container>
-)
+);
 
-export default TemperatureDisplay
+export default TemperatureDisplay;
 
 // ------
 // styles
@@ -35,13 +35,13 @@ const Container = styled.div<Pick<Props, 'isSyncing'>>`
   color: black;
   transition: all 0.5s ease-out;
   filter: ${(props) => (props.isSyncing ? 'blur(15px)' : 'none')};
-`
+`;
 
 const LargeGauge = styled.div`
   font-size: 100px;
   font-weight: 100;
   margin-bottom: 10px;
-`
+`;
 
 const SmallGauge = styled.div`
   font-size: 30px;
@@ -53,4 +53,4 @@ const SmallGauge = styled.div`
   text-align: center;
   line-height: 2em;
   color: black;
-`
+`;

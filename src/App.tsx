@@ -1,14 +1,12 @@
-import React from 'react'
-import styled from 'styled-components'
-// import { remote } from 'electron'
+import React from 'react';
+import { IoIosPower, IoIosSettings } from 'react-icons/io';
 // import 'react-tippy/dist/tippy.css'
 // import { Tooltip } from 'react-tippy'
-
-import { HashRouter as Router, Route, Link, Switch } from 'react-router-dom'
-import Header from './components/Header'
-import MainView from './components/MainView'
-import SettingsView from './components/SettingsView'
-import { IoIosSettings, IoIosPower } from 'react-icons/io'
+import { HashRouter as Router, Link, Route, Switch } from 'react-router-dom';
+import styled from 'styled-components';
+import Header from './components/Header';
+import MainView from './containers/MainView';
+import SettingsView from './containers/SettingsView';
 
 export default function App() {
   return (
@@ -26,7 +24,7 @@ export default function App() {
         </Switch>
       </Router>
     </Container>
-  )
+  );
 }
 
 const Container = styled.div`
@@ -35,4 +33,4 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   position: absolute;
-`
+`;
