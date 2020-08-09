@@ -7,19 +7,20 @@
     "email": "y@uechi.io"
   },
   "scripts": {
-    "build": "craco build",
+    "build": "craco build && electron-builder --dir",
+    "dev": "concurrently -k 'npm:dev:*'",
     "dev:cra": "BROWSER=none craco start",
     "dev:electron": "wait-on http://localhost:3000 && electron .",
     "eject": "craco eject",
-    "package": "build -mw",
+    "package": "electron-builder -m",
     "postinstall": "electron-builder install-app-deps",
-    "prepackage": "yarn build",
-    "start": "run-p dev:*",
+    "prepackage": "npm run build",
+    "start": "npm run dev",
     "test": "craco test"
   },
   "dependencies": {
     "@craco/craco": "^5.6.4",
-    "@types/react": "^16.9.44",
+    "@types/react": "^16.9.45",
     "electron-is-dev": "^1.2.0",
     "nature-remo": "^1.2.3",
     "react": "^16.13.1",
@@ -35,10 +36,10 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
     "@types/styled-components": "^5.1.2",
-    "electron": "^9.1.2",
+    "concurrently": "^5.3.0",
+    "electron": "^9.2.0",
     "electron-builder": "^22.8.0",
     "husky": "^4.2.5",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",
     "typescript": "^3.9.7",
@@ -50,7 +51,7 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
-  "homepage": ".",
+  "homepage": "https://github.com/uetchy/nature-remo-macos",
   "license": "Apache-2.0",
   "browserslist": {
     "production": [
@@ -67,13 +68,13 @@
   "build": {
     "appId": "io.uechi.nature-remo-macos",
     "productName": "Nature Remo",
-    "copyright": "Copyright © 2019 ${author}",
+    "copyright": "Copyright © 2020 ${author}",
     "mac": {
       "category": "public.app-category.utilities"
     },
     "files": [
-      "build/**/*",
-      "node_modules/**/*"
+      "node_modules/",
+      "package.json"
     ],
     "directories": {
       "buildResources": "assets"
