@@ -16,7 +16,8 @@
     "dev:renderer": "webpack-dev-server --config webpack.renderer.js",
     "package": "electron-builder -m",
     "postinstall": "electron-builder install-app-deps",
-    "prepackage": "npm run build"
+    "prepackage": "npm run build",
+    "release": "release-it"
   },
   "dependencies": {
     "electron-is-dev": "^1.2.0",
@@ -30,6 +31,7 @@
     "update-electron-app": "^1.5.0"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^1.1.4",
     "@types/history": "^4.7.7",
     "@types/node": "^12.12.6",
     "@types/react": "^16.9.45",
@@ -46,6 +48,7 @@
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",
+    "release-it": "^13.6.6",
     "shx": "^0.3.2",
     "ts-loader": "^8.0.2",
     "typescript": "^3.9.7",
