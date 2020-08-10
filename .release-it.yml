@@ -9,6 +9,8 @@ github:
     - artifacts/*.zip
     - artifacts/*.blockmap
     - artifacts/*.yml
+npm:
+  publish: false
 hooks:
   before:release: npm run package
 plugins:
