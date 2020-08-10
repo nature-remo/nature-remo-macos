@@ -1,15 +1,11 @@
-// Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
+import { app, BrowserWindow } from 'electron';
+import isDev from 'electron-is-dev';
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+require('update-electron-app')();
 
-const isDev = require('electron-is-dev');
+let mainWindow: BrowserWindow | null;
 
 function createWindow() {
-  // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 800,
@@ -21,18 +17,17 @@ function createWindow() {
     useContentSize: true,
   });
 
-  // and load the index.html of the app.
-  // mainWindow.loadFile('index.html')
-  mainWindow.loadURL(
-    isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`,
-  );
-
   if (isDev) {
     // Open the DevTools.
     //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     mainWindow.webContents.openDevTools();
+  }
+
+  // url or absolute path
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:8090');
+  } else {
+    mainWindow.loadFile(`dist/index.html`);
   }
 
   // Emitted when the window is closed.
