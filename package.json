@@ -20,6 +20,21 @@
     "prepackage": "npm run clean && npm run build",
     "release": "release-it"
   },
+  "main": "dist/main.js",
+  "build": {
+    "appId": "io.uechi.${name}",
+    "productName": "Nature Remo",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "files": [
+      "dist"
+    ],
+    "directories": {
+      "output": "artifacts",
+      "buildResources": "buildResources"
+    }
+  },
   "dependencies": {
     "electron-is-dev": "^1.2.0",
     "nature-remo": "^1.2.3",
@@ -34,8 +49,8 @@
   "devDependencies": {
     "@release-it/conventional-changelog": "^1.1.4",
     "@types/history": "^4.7.7",
-    "@types/node": "^12.12.6",
-    "@types/react": "^16.9.45",
+    "@types/node": "^14.0.27",
+    "@types/react": "^16.9.46",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
     "@types/styled-components": "^5.1.2",
@@ -59,17 +74,16 @@
     "webpack-dev-server": "^3.11.0",
     "webpackbar": "^4.0.0"
   },
-  "main": "dist/main.js",
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
   },
+  "homepage": "https://github.com/uetchy/nature-remo-macos",
   "repository": {
     "type": "git",
     "url": "git://github.com/uetchy/nature-remo-macos"
   },
-  "homepage": "https://github.com/uetchy/nature-remo-macos",
   "license": "Apache-2.0",
   "browserslist": {
     "production": [
@@ -82,20 +96,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "build": {
-    "appId": "io.uechi.${name}",
-    "productName": "Nature Remo",
-    "mac": {
-      "category": "public.app-category.utilities"
-    },
-    "files": [
-      "dist"
-    ],
-    "directories": {
-      "output": "artifacts",
-      "buildResources": "buildResources"
-    }
   },
   "eslintConfig": {
     "extends": "react-app"
