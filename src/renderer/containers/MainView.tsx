@@ -1,9 +1,9 @@
 import { History } from 'history';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import TemperatureBarIndicator from '../components/TemperatureBarIndicator';
-import TemperatureController from '../components/TemperatureController';
-import TemperatureDisplay from '../components/TemperatureDisplay';
+import TemperatureBarIndicator from '../components/aircon/TemperatureBarIndicator';
+import TemperatureController from '../components/aircon/TemperatureController';
+import TemperatureDisplay from '../components/aircon/TemperatureDisplay';
 import { useAircon } from '../hooks/useAircon';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
@@ -11,12 +11,10 @@ const MainView: React.FC<{ history: History }> = ({ history }) => {
   const [token] = useLocalStorage('token');
   const [aircon, room, setAirconData, applyAirconData] = useAircon(token || '');
 
-  const [isModifyingTemperature, setIsModifyingTemperature] = useState<boolean>(
-    false,
-  );
-  const [isSyncingWithServer, setIsSyncingWithServer] = useState<boolean>(
-    false,
-  );
+  const [isModifyingTemperature, setIsModifyingTemperature] =
+    useState<boolean>(false);
+  const [isSyncingWithServer, setIsSyncingWithServer] =
+    useState<boolean>(false);
   const [targetValue, setTargetValue] = useState<number>(0);
 
   // Settings view

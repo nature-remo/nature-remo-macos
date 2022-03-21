@@ -10,7 +10,7 @@ const SettingsView: React.FC<{ history: History }> = ({ history }) => {
   function onSave(e: React.MouseEvent) {
     e.stopPropagation();
     localStorage.setItem('token', token);
-    history.goBack();
+    history.back();
   }
 
   return (

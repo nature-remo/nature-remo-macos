@@ -2,7 +2,7 @@ import React from 'react';
 import { IoIosPower, IoIosSettings } from 'react-icons/io';
 // import 'react-tippy/dist/tippy.css'
 // import { Tooltip } from 'react-tippy'
-import { HashRouter as Router, Link, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from './components/Header';
 import MainView from './containers/MainView';
@@ -14,14 +14,14 @@ export default function App() {
       <Router>
         <Header>
           <IoIosPower />
-          <Link to={{ pathname: '/settings/', state: { modal: true } }}>
+          <Link to={{ pathname: '/settings/' }}>
             <IoIosSettings />
           </Link>
         </Header>
-        <Switch>
-          <Route exact path="/" component={MainView} />
-          <Route exact path="/settings/" component={SettingsView} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={MainView} />
+          <Route path="/settings/" element={SettingsView} />
+        </Routes>
       </Router>
     </Container>
   );
