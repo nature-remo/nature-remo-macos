@@ -79,10 +79,10 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
-  "homepage": "https://github.com/uetchy/nature-remo-macos",
+  "homepage": "https://github.com/nature-remo/nature-remo-macos",
   "repository": {
     "type": "git",
-    "url": "git://github.com/uetchy/nature-remo-macos"
+    "url": "git://github.com/nature-remo/nature-remo-macos"
   },
   "license": "Apache-2.0",
   "browserslist": {
